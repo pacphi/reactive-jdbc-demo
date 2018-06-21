@@ -8,6 +8,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -18,9 +19,25 @@ import io.reactiverse.pgclient.PgPool;
 @Configuration
 public class ReactiveJdbcDemoConfig {
 	
-	@Bean
-	PgPool pgPool(PgSettings settings) {
-		return PgClient.pool(settings.getConnectionUri());
+	@Profile("!cloud")
+	@Configuration
+	static class LocalConfig {
+		
+		@Bean
+		PgPool pgPool(PgSettings settings) {
+			return PgClient.pool(settings.getConnectionUri());
+		}
+		
+	}
+	
+	@Profile("cloud")
+	@Configuration
+	static class CloudConfig {
+		
+		@Bean
+		PgPool pgPool() {
+			return PgClient.pool();
+		}
 	}
 	
 	@Bean
