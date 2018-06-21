@@ -1,0 +1,15 @@
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure: 
+        include: health,info,env
+        
+logging:
+  level:
+    io.pivotal.reactive.jdbc: INFO
+        
+pg:
+  connectionUri: postgresql://admin:passw0rd@localhost:5432/people
