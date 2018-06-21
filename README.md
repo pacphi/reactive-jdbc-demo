@@ -41,11 +41,11 @@ gradle build
 
     Credentials are:
 
-    * System => PostgreSQL
-    * Server => db
-    * Username => admin
-    * Password => passw0rd
-    * Database => people
+    * System => `PostgreSQL`
+    * Server => `db`
+    * Username => `admin`
+    * Password => `passw0rd`
+    * Database => `people`
 
     Click the `Login` button
 
