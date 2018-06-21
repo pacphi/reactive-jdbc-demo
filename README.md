@@ -217,7 +217,7 @@ gradle build
     * Password => `{password}`
     * Database => `{database}`
 
-    > Replace all bracketed valuse above with what you learned from Step 5
+    Replace all bracketed valuse above with what you learned from Step 5
 
     Click the `Login` button
 
