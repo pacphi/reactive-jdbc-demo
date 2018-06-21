@@ -229,4 +229,33 @@ gradle build
 
     But replace occurrences of `localhost:8080` with URL to application hosted on Cloud Foundry
 
+
+## How to spin down workloads on Cloud Foundry
+
+1. Stop the application
+
+    ```bash
+    cf stop reactive-jdbc-demo
+    ```
+
+2. Unbind the database instance
+
+    ```bash
+    cf us reactive-jdbc-demo {service name}
+    ```
+    > `{service name}` above should match value in `How to run on Cloud Foundry` steps 3 and 4
+
+3. Delete the database instance
+
+    ```bash
+    cf ds {service name}
+    ```
+    > `{service name}` above should match value in `How to run on Cloud Foundry` steps 3 and 4
+
+4. Delete the application
+
+    ```bash
+    cf delete reactive-jdbc-demo
+    ```
+
 *Congratulations! You've just pushed and interacted with a 100% reactive and cloud native app.*
