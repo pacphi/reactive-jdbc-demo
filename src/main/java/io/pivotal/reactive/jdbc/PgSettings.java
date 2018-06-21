@@ -11,4 +11,5 @@ import lombok.Data;
 public class PgSettings {
 
 	private String connectionUri;
+	private String lookupKey;
 }

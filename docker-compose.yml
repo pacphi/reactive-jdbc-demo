@@ -9,7 +9,6 @@ services:
       - 5432:5432
     environment:
       - POSTGRES_DB=people
-      # The following must match the DB_USER and DB_PASSWORD values passed to Artifactory
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=passw0rd
     volumes:

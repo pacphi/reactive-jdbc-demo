@@ -130,8 +130,103 @@ gradle build
 
 ## How to run on Cloud Foundry
 
-// TODO
+1. Authenticate to a foundation using the API endpoint. 
+    > E.g., login to [Pivotal Web Services](https://run.pivotal.io)
 
-## Resources
+    ```bash
+    cf login -a https:// api.run.pivotal.io
+    ```
 
-// TODO
+2. Push the app, but don't start it
+
+    ```bash
+    cf push reactive-jdbc-demo --random-route --no-start -p ./build/libs/reactive-jdbc-demo-0.0.1-SNAPSHOT.jar -m 1G -b https://github.com/cloudfoundry/java-buildpack.git
+    ```
+
+3. Let's fire fire up a Postgres instance
+
+    > We're going to use [ElephantSQL](https://www.elephantsql.com)
+
+    ```bash
+    cf cs elephantsql panda {service name}
+    ```
+
+    > Note: this is going to cost you $19/month to keep alive
+    > Replace {service name} above with your desired service name
+
+4. Next we'll bind the service to the application
+
+    ```bash
+    cf bs reactive-jdbc-demo {service name}
+    ```
+
+    > Make sure {service name} above matches what you defined in Step 3
+
+5. Let's verify that VCAP_SERVICES was properly injected
+
+    ```bash
+    cf env reactive-jdbc-demo
+ 
+    Getting env variables for app reactive-jdbc-demo in org sooby-doo / space dev as dweezil@zappa.com...
+    OK
+
+    System-Provided:
+    {
+    "VCAP_SERVICES": {
+    "elephantsql": [
+    {
+        "binding_name": null,
+        "credentials": {
+        "max_conns": "20",
+        "uri": "postgres://blxrphig:XXX0bLLyWpiUqKozCRhzygyhnpOMlMC@elmer-01.db.elephantsql.com:5432/banzlhig"
+        },
+        ...
+    ```
+
+    > We're interested in `vcap_services.elephantsql.uri`
+    > The URI consists of {vendor}://{username}:{password}@{server}:5432/{database}
+
+6. We'll set an environment variable
+
+    ```bash
+    cf set-env reactive-jdbc-demo PG_LOOKUP_KEY {service name}
+    ```
+    > `{service name}` above should match value in steps 3 and 4
+
+7. Now let's startup the application
+
+    ```bash
+    cf start reactive-jdbc-demo
+    ```
+
+8. Launch Adminer to administer the database
+
+    The `people` table doesn't exist yet, so we need to create it
+
+    ```bash
+    docker-compose up -d
+    ```
+
+    Open a browser and visit `http://localhost:9090`
+
+    Credentials are:
+
+    * System => `PostgreSQL`
+    * Server => `{vendor}`
+    * Username => `{username}`
+    * Password => `{password}`
+    * Database => `{database}`
+
+    > Replace all bracketed valuse above with what you learned from Step 5
+
+    Click the `Login` button
+
+9. Click on the `SQL command` link 
+
+10. Cut-and-paste the contents of [people.ddl](people.ddl) into the text area, then click the `Execute` button
+
+11. Follow steps 6-8 above in `How to run locally` to interact with API
+
+    But replace occurrences of `localhost:8080` with URL to application hosted on Cloud Foundry
+
+*Congratulations! You've just pushed and interacted with a 100% reactive and cloud native app.*

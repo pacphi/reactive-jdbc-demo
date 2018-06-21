@@ -9,6 +9,8 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
+import org.springframework.util.Assert;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -35,8 +37,16 @@ public class ReactiveJdbcDemoConfig {
 	static class CloudConfig {
 		
 		@Bean
-		PgPool pgPool() {
-			return PgClient.pool();
+		PgPool pgPool(PgSettings settings, Environment env) {
+			if (settings.getLookupKey() != null && !settings.getLookupKey().isEmpty()) {
+				String uri = env.getProperty("cloud.services." + settings.getLookupKey() + ".connection.uri" , String.class);
+				Assert.notNull("Cloud services value could not be resolved", uri);
+				String connectionUri = uri.replace("postgres", "postgresql");
+				return PgClient.pool(connectionUri);
+			} else {
+				// fallback on environment variables
+				return PgClient.pool();
+			}
 		}
 	}
 	
