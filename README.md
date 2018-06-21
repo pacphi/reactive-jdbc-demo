@@ -162,7 +162,7 @@ gradle build
 
     > Make sure {service name} above matches what you defined in Step 3
 
-5. Let's verify that VCAP_SERVICES was properly injected
+5. Let's verify that `VCAP_SERVICES` was properly injected
 
     ```bash
     cf env reactive-jdbc-demo
