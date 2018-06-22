@@ -1,15 +1,17 @@
-# Reactive JDBC Experiment  
+# Reactive ~~JDBC~~ Experiment  
 
-This is a simple experiment to test Spring 5's Webflux Module's [Functional Programming Model](https://docs.spring.io/spring/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html#_functional_programming_model) interaction with the Reactiverse [reactive-pg-client](https://reactiverse.io/reactive-pg-client/guide/java/index.html).  
+This is a simple experiment to test Spring 5's Webflux Module's [Functional Programming Model](https://docs.spring.io/spring/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html#_functional_programming_model) interaction with the Reactiverse [reactive-pg-client](https://reactiverse.io/reactive-pg-client/guide/java/index.html). 
+
+> Disclaimer: the `reactive-pg-client` does **not** implement the [JDBC](http://download.oracle.com/otn-pub/jcp/jdbc-4_1-mrel-spec/jdbc4.1-fr-spec.pdf?AuthParam=1529679008_7acd6035892acd847bba6ff8dd5242d1) specification.
 
 ## Prerequisites
 
 * An account with [Space Developer role](https://docs.cloudfoundry.org/concepts/roles.html#roles) access on a Cloud Foundry foundation, e.g., [Pivotal Web Services](https://run.pivotal.io)
 * [CF CLI](https://github.com/cloudfoundry/cli#downloads) 6.37.0 or better if you want to push the application to a Cloud Foundry (CF) instance
 * [httpie](https://httpie.org/#installation) 0.9.9 or better to simplify interaction with API endpoints
-* Java [JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) 1.8u172 or better
-* [Gradle](https://gradle.org/releases/) 4.8 or better
-* Docker for [Mac](https://store.docker.com/editions/community/docker-ce-desktop-mac) or [Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows)
+* Java [JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) 1.8u172 or better to compile and run the code
+* [Gradle](https://gradle.org/releases/) 4.8 or better to build and package source code
+* Docker for [Mac](https://store.docker.com/editions/community/docker-ce-desktop-mac) or [Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows) for spinning up a local instance of Postgres and Adminer (a database administration interface)
 
 
 ## Clone
