@@ -212,7 +212,7 @@ gradle build
     Credentials are:
 
     * System => `PostgreSQL`
-    * Server => `{vendor}`
+    * Server => `{server}`
     * Username => `{username}`
     * Password => `{password}`
     * Database => `{database}`
