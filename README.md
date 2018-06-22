@@ -217,7 +217,7 @@ gradle build
     * Password => `{password}`
     * Database => `{database}`
 
-    Replace all bracketed valuse above with what you learned from Step 5
+    Replace all bracketed values above with what you learned from Step 5
 
     Click the `Login` button
 
@@ -229,6 +229,7 @@ gradle build
 
     But replace occurrences of `localhost:8080` with URL to application hosted on Cloud Foundry
 
+*Congratulations! You've just pushed and interacted with a 100% reactive and cloud native app.*
 
 ## How to spin down workloads on Cloud Foundry
 
@@ -257,5 +258,3 @@ gradle build
     ```bash
     cf delete reactive-jdbc-demo
     ```
-
-*Congratulations! You've just pushed and interacted with a 100% reactive and cloud native app.*
