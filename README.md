@@ -260,3 +260,14 @@ gradle build
     ```bash
     cf delete reactive-jdbc-demo
     ```
+    
+## What to look forward to?
+
+* Asynchronous Database Access ([ADBA](https://blogs.oracle.com/java/jdbc-next:-a-new-asynchronous-api-for-connecting-to-a-database))
+* ADBA over JDBC ([AoJ](https://github.com/oracle/oracle-db-examples/blob/master/java/AoJ/README.md))
+
+Oracle continues to work on ADBA while having released AoJ under an Apache license to get community feedback. 
+
+Maybe we will see something concrete in JDK 11? 
+
+But until then...
