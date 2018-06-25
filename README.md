@@ -169,7 +169,7 @@ gradle build
     ```bash
     cf env reactive-jdbc-demo
  
-    Getting env variables for app reactive-jdbc-demo in org sooby-doo / space dev as dweezil@zappa.com...
+    Getting env variables for app reactive-jdbc-demo in org scooby-doo / space dev as dweezil@zappa.com...
     OK
 
     System-Provided:
