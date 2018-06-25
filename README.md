@@ -270,4 +270,8 @@ Oracle continues to work on ADBA while having released AoJ under an Apache licen
 
 Maybe we will see something concrete in JDK 11? 
 
-But until then...
+## What else is there to play with?
+
+* [rxjava2-jdbc](https://github.com/davidmoten/rxjava2-jdbc)
+* [Vert.x JDBC Client](https://vertx.io/docs/vertx-jdbc-client/java/)
+* Reactive Relational Database Connectivity Client ([R2DBC](https://github.com/r2dbc/r2dbc-client))
