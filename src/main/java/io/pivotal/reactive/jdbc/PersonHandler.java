@@ -22,7 +22,7 @@ public class PersonHandler {
 	private final PersonRepository repository;
 
 	public Mono<ServerResponse> listPeople(ServerRequest request) {
-		log.info("Attempting " + request.methodName() + " " + request.path());
+		log.info("Attempting " + request.method().name() + " " + request.path());
 		Flux<Person> people = repository.allPeople();
 		return ServerResponse.ok()
 				.contentType(APPLICATION_JSON)
@@ -30,7 +30,7 @@ public class PersonHandler {
 	}
 
 	public Mono<ServerResponse> createPerson(ServerRequest request) {
-		log.info("Attempting " + request.methodName() + " " + request.path());
+		log.info("Attempting " + request.method().name() + " " + request.path());
 		return request.bodyToMono(Person.class)
 				.flatMap(repository::save)
 				.flatMap(person -> ServerResponse.accepted()
@@ -39,7 +39,7 @@ public class PersonHandler {
 	}
 
 	public Mono<ServerResponse> getPerson(ServerRequest request) {
-		log.info("Attempting " + request.methodName() + " " + request.path());
+		log.info("Attempting " + request.method().name() + " " + request.path());
 		UUID personId = UUID.fromString(request.pathVariable("id"));
 		Mono<ServerResponse> notFound = ServerResponse.notFound().build();
 		return repository.findById(personId)
