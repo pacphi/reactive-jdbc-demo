@@ -1,16 +1,27 @@
-# Reactive ~~JDBC~~ Experiment  
+# Reactive R2DBC Experiment
 
-This is a simple experiment to test Spring 5's Webflux Module's [Functional Programming Model](https://docs.spring.io/spring/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html#_functional_programming_model) interaction with the Reactiverse [reactive-pg-client](https://reactiverse.io/reactive-pg-client/guide/java/index.html). 
+This is a simple experiment to test Spring WebFlux [Functional Programming Model](https://docs.spring.io/spring-framework/reference/web/webflux-functional.html) interaction with PostgreSQL using [R2DBC](https://r2dbc.io/).
 
-> Disclaimer: the `reactive-pg-client` does **not** implement the [JDBC](http://download.oracle.com/otn-pub/jcp/jdbc-4_1-mrel-spec/jdbc4.1-fr-spec.pdf?AuthParam=1529679008_7acd6035892acd847bba6ff8dd5242d1) specification.
+> Disclaimer: R2DBC does **not** implement the [JDBC](http://download.oracle.com/otn-pub/jcp/jdbc-4_1-mrel-spec/jdbc4.1-fr-spec.pdf?AuthParam=1529679008_7acd6035892acd847bba6ff8dd5242d1) specification - it's a fully reactive alternative.
+
+## Technologies
+
+* Spring Boot 4.0.1
+* Spring WebFlux
+* Spring Data R2DBC
+* Java 21
+* Gradle 9.1
+* PostgreSQL R2DBC Driver 1.0.7
+* Testcontainers 1.21.3
+* Lombok 1.18.42
 
 ## Prerequisites
 
 * An account with [Space Developer role](https://docs.cloudfoundry.org/concepts/roles.html#roles) access on a Cloud Foundry foundation, e.g., [Pivotal Web Services](https://run.pivotal.io)
 * [CF CLI](https://github.com/cloudfoundry/cli#downloads) 6.37.0 or better if you want to push the application to a Cloud Foundry (CF) instance
 * [httpie](https://httpie.org/#installation) 0.9.9 or better to simplify interaction with API endpoints
-* Java [JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) 1.8u172 or better to compile and run the code
-* [Gradle](https://gradle.org/releases/) 4.8 or better to build and package source code
+* Java [JDK](https://adoptium.net/) 21 or better to compile and run the code
+* [Gradle](https://gradle.org/releases/) 9.1 or better to build and package source code (wrapper included)
 * Docker for [Mac](https://store.docker.com/editions/community/docker-ce-desktop-mac) or [Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows) for spinning up a local instance of Postgres and Adminer (a database administration interface)
 
 
@@ -51,13 +62,7 @@ gradle build
 
     Click the `Login` button
 
-3. Click on the `SQL command` link 
-
-    Link is in the upper left hand-corner of the interface
-
-4. Cut-and-paste the contents of [people.ddl](people.ddl) into the text area, then click the `Execute` button
-
-5. Start the application
+3. Start the application
 
     Start a new Terminal session and type
 
@@ -65,16 +70,18 @@ gradle build
     gradle bootRun
     ```
 
-6. Let's create some data using the API
+    > Spring Data R2DBC will automatically initialize the schema from schema.sql if present.
+
+4. Let's create some data using the API
 
     ```bash
     http POST localhost:8080/person firstName=Dweezil lastName=Zappa age=48
 
     HTTP/1.1 202 Accepted
-    content-length: 0
+    Content-Type: application/json
     ```
 
-7. Verify that we can find the person we added
+5. Verify that we can find the person we added
 
     ```bash
     http localhost:8080/person
@@ -93,7 +100,7 @@ gradle build
     ]
     ```
 
-8. Let's ask for a person by id
+6. Let's ask for a person by id
 
     ```bash
     http localhost:8080/person/582279d1-9bd1-4e49-946c-ac720de0e04f
@@ -188,12 +195,9 @@ gradle build
     > We're interested in `vcap_services.elephantsql.uri`
     > The URI consists of {vendor}://{username}:{password}@{server}:5432/{database}
 
-6. We'll set an environment variable
+6. Configure R2DBC connection using Cloud Foundry service binding
 
-    ```bash
-    cf set-env reactive-jdbc-demo PG_LOOKUP_KEY {service name}
-    ```
-    > `{service name}` above should match value in steps 3 and 4
+    Cloud Foundry will automatically configure the R2DBC connection from the bound PostgreSQL service.
 
 7. Now let's startup the application
 
@@ -201,9 +205,9 @@ gradle build
     cf start reactive-jdbc-demo
     ```
 
-8. Launch Adminer to administer the database
+    > Spring Data R2DBC will automatically initialize the schema.
 
-    The `people` table doesn't exist yet, so we need to create it
+8. (Optional) Launch Adminer to verify database setup
 
     ```bash
     docker-compose up -d
@@ -223,11 +227,7 @@ gradle build
 
     Click the `Login` button
 
-9. Click on the `SQL command` link 
-
-10. Cut-and-paste the contents of [people.ddl](people.ddl) into the text area, then click the `Execute` button
-
-11. Follow steps 6-8 above in `How to run locally` to interact with API
+9. Follow steps 4-6 above in `How to run locally` to interact with API
 
     But replace occurrences of `localhost:8080` with URL to application hosted on Cloud Foundry
 
@@ -260,18 +260,30 @@ gradle build
     ```bash
     cf delete reactive-jdbc-demo
     ```
-    
-## What to look forward to?
 
-* Asynchronous Database Access ([ADBA](https://blogs.oracle.com/java/jdbc-next:-a-new-asynchronous-api-for-connecting-to-a-database))
-* ADBA over JDBC ([AoJ](https://github.com/oracle/oracle-db-examples/blob/master/java/AoJ/README.md))
+## Key Features
 
-Oracle continues to work on ADBA while having released AoJ under an Apache license to get community feedback. 
+### Spring Data R2DBC Benefits
 
-Maybe we will see something concrete in JDK 11? 
+* **Fully Reactive**: Non-blocking database operations from top to bottom
+* **Repository Pattern**: Clean, type-safe data access with ReactiveCrudRepository
+* **Spring Boot Integration**: Automatic configuration and connection pool management
+* **Testcontainers Support**: Easy integration testing with actual PostgreSQL containers
+* **Cloud-Native**: Built-in support for Cloud Foundry service bindings
 
-## What else is there to play with?
+### Migration Notes
 
-* [rxjava2-jdbc](https://github.com/davidmoten/rxjava2-jdbc)
-* [Vert.x JDBC Client](https://vertx.io/docs/vertx-jdbc-client/java/)
-* Reactive Relational Database Connectivity Client ([R2DBC](https://github.com/r2dbc/r2dbc-client))
+This project has been modernized from the deprecated `reactive-pg-client` to **Spring Data R2DBC**, which provides:
+
+* Standard Spring Data repository interfaces
+* Automatic connection pool management
+* Better error handling and transaction support
+* Active community and long-term support
+* Built-in Spring Boot autoconfiguration
+
+## Learn More
+
+* [Spring Data R2DBC Reference](https://docs.spring.io/spring-data/r2dbc/reference/)
+* [R2DBC Specification](https://r2dbc.io/)
+* [PostgreSQL R2DBC Driver](https://github.com/pgjdbc/r2dbc-postgresql)
+* [Spring WebFlux Functional Endpoints](https://docs.spring.io/spring-framework/reference/web/webflux-functional.html)
